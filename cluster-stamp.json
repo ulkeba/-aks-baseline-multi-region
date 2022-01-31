@@ -14,12 +14,6 @@
                 "description": "The shared Azure Container Registry Id"
             }
         },
-        "acrPrivateDnsZonesId": {
-            "type": "string",
-            "metadata": {
-                "description": "The shared Azure Container Registry Private Endopoint Id"
-            }
-        },
         "appInstanceId": {
             "type": "string",
             "allowedValues": [
@@ -119,19 +113,19 @@
         "nodeResourceGroupName": "[concat('rg-', variables('clusterName'), '-nodepools')]",
         "clusterName": "[concat('aks-', variables('subRgUniqueString'))]",
 
-        "containerRegistryResourceGroup": "[split(parameters('containerRegistryId'),'/')[4]]",
         "containerRegistryName": "[split(parameters('containerRegistryId'),'/')[8]]",
 
         "vNetResourceGroup": "[split(parameters('targetVnetResourceId'),'/')[4]]",
         "vnetName": "[split(parameters('targetVnetResourceId'),'/')[8]]",
         "vnetNodePoolSubnetResourceId": "[concat(parameters('targetVnetResourceId'), '/subnets/snet-clusternodes')]",
-        "clusterIdentityDeploymentName": "[concat('EnsureClusterIdentityHasRbacToSelfManagedResources-', variables('clusterName'))]",
+        "clusterIdentityDeploymentName": "[concat('EnsureClusterIdentityHasRbacToSelfManagedRes-', variables('clusterName'))]",
         "vnetIngressServicesSubnetResourceId": "[concat(parameters('targetVnetResourceId'), '/subnets/snet-cluster-ingressservices')]",
 
         "agwName": "[concat('apw-', variables('clusterName'))]",
         "apwResourceId": "[resourceId('Microsoft.Network/applicationGateways', variables('agwName'))]",
 
         "akvPrivateDnsZonesName": "privatelink.vaultcore.azure.net",
+        "acrPrivateDnsZonesName": "privatelink.azurecr.io",
 
         "clusterControlPlaneIdentityName": "[concat('mi-', variables('clusterName'), '-controlplane')]",
 
@@ -287,6 +281,32 @@
                         "roleDefinitionId": "[variables('readerRole')]",
                         "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'podmi-ingress-controller')).principalId]",
                         "principalType": "ServicePrincipal"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones",
+            "apiVersion": "2020-06-01",
+            "name": "[variables('acrPrivateDnsZonesName')]",
+            "location": "global",
+            "comments": "Enabling Azure Container Registry Private Link on vnet.",
+            "properties": {},
+            "resources": [
+                {
+                    "type": "virtualNetworkLinks",
+                    "apiVersion": "2020-06-01",
+                    "name": "[concat('to_', variables('vnetName'))]",
+                    "dependsOn": [
+                        "[variables('acrPrivateDnsZonesName')]"
+                    ],
+                    "location": "global",
+                    "comments": "Enabling cluster vnet private zone DNS lookup - used by cluster vnet for direct DNS queries (ones not proxied via the hub).",
+                    "properties": {
+                        "virtualNetwork": {
+                            "id": "[parameters('targetVnetResourceId')]"
+                        },
+                        "registrationEnabled": false
                     }
                 }
             ]
@@ -608,35 +628,6 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "EnsureSpokeVnetIsLinkedToPrivateDnsZone",
-            "apiVersion": "2020-06-01",
-            "dependsOn": [],
-            "resourceGroup": "[variables('containerRegistryResourceGroup')]",
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "resources": [
-                        {
-                            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-                            "apiVersion": "2020-06-01",
-                            "name": "[concat('privatelink.azurecr.io/to_', variables('vnetName'))]",
-                            "location": "global",
-                            "comments": "Enabling cluster vnet private zone DNS lookup - used by cluster vnet for direct DNS queries (ones not proxied via the hub).",
-                            "properties": {
-                                "virtualNetwork": {
-                                    "id": "[parameters('targetVnetResourceId')]"
-                                },
-                                "registrationEnabled": false
-                            }
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
             "name": "[variables('clusterIdentityDeploymentName')]",
             "apiVersion": "2020-06-01",
             "dependsOn": [
@@ -713,7 +704,7 @@
             "dependsOn": [
                 "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName'))]"
             ],
-            "resourceGroup": "[variables('containerRegistryResourceGroup')]",
+            "resourceGroup": "[split(parameters('containerRegistryId'),'/')[4]]",
             "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -765,14 +756,15 @@
                     "name": "default",
                     "location": "[parameters('location')]",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Network/privateEndpoints', concat('acr-to-', variables('vnetName')))]"
+                        "[resourceId('Microsoft.Network/privateEndpoints', concat('acr-to-', variables('vnetName')))]",
+                        "[resourceId('Microsoft.Network/privateDnsZones', variables('acrPrivateDnsZonesName'))]"
                     ],
                     "properties": {
                         "privateDnsZoneConfigs": [
                             {
                                 "name": "privatelink-azurecr-io",
                                 "properties": {
-                                    "privateDnsZoneId": "[parameters('acrPrivateDnsZonesId')]"
+                                    "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', variables('acrPrivateDnsZonesName'))]"
                                 }
                             }
                         ]
