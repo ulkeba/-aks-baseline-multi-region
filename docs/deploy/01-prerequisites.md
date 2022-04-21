@@ -14,7 +14,7 @@ This is the starting point for the instructions on deploying the [AKS baseline m
    ```bash
    az login
    TENANTID_AZURERBAC=$(az account show --query tenantId -o tsv)
-   TENANTS=$(az rest --method get --url https://management.azure.com/tenants?api-version=2020-01-01 --query 'value[].{TenantId:tenantId,Name:displayName}' -o table)
+   TENANTS=$(az rest --method get --url "https://management.azure.com/tenants?api-version=2020-01-01" --query 'value[].{TenantId:tenantId,Name:displayName}' -o table)
    ```
 
    :bulb: If you don't have an Azure subscription, you can create a [free account](https://azure.microsoft.com/free).
