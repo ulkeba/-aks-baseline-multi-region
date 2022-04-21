@@ -56,7 +56,7 @@ This is the starting point for the instructions on deploying the [AKS baseline m
 1. Login GitHub Cli
 
    ```bash
-   gh auth login -s "repo,admin:org"
+   gh auth login --scopes "repo,admin:org"
    ```
 
 1. Fork the repository first, and clone it
