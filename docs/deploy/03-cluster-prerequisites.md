@@ -43,7 +43,7 @@ Following the steps below will result in the provisioning of the shared Azure re
 
    ```bash
    # [This takes less than one minute.]
-   az group create --name rg-bu0001a0042-shared --location centralus
+   az group create --name rg-bu0001a0042-shared --location eastus2
    ```
 
 1. Deploy the AKS cluster prerequisites and shared services.
