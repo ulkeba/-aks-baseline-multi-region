@@ -745,6 +745,25 @@
                                         "destinationPorts": [
                                             "443"
                                         ]
+                                    },
+                                    {
+                                        "ruleType": "NetworkRule",
+                                        "name": "pod-to-api-server_udp-1194",
+                                        "ipProtocols": [
+                                            "UDP"
+                                        ],
+                                        "sourceAddresses": [],
+                                        "sourceIpGroups": [
+                                            "[resourceId('Microsoft.Network/ipGroups', variables('aksIpGroupName'))]"
+                                        ],
+                                        "destinationAddresses": [
+                                            "[concat('AzureCloud.', parameters('location'))]"
+                                        ],
+                                        "destinationIpGroups": [],
+                                        "destinationFqdns": [],
+                                        "destinationPorts": [
+                                            "1194"
+                                        ]
                                     }
                                 ],
                                 "name": "AKS-Global-Requirements",
