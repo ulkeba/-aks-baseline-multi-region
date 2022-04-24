@@ -15,7 +15,7 @@
             "value": "10.200.4.64/27"
         },
         "azureBastionSubnetAddressSpace": {
-            "value": "10.200.4.96/27"
+            "value": "10.200.4.128/26"
         }
     }
 }

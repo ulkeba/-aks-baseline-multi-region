@@ -36,7 +36,7 @@ In the future, this VNet might hold more subnets like [ACI Provider instance] su
 | Azure Application Gateway Subnet                       | 0            | [11]               | 0                | 0          | 0                        | 100           | 100                 | 0                     | 0                         | 5                                        | 0                   | 16                    | 16                 | 28                 | 10.240.4.0/28  | 10.240.4.16 | 10.240.4.31   |
 | Gateway Subnet (GatewaySubnet)                         | 0            | [27<sup>1</sup>]   | 0                | 0          | 0                        | 100           | 100                 | 0                     | 0                         | 5                                        | 0                   | 32                    | 32                 | 27                 | 10.200.0.64/27 | 10.200.0.64 | 10.200.0.95   |
 | Azure Firewall Subnet (AzureFirewallSubnet)            | 0            | [59]               | 0                | 0          | 0                        | 100           | 100                 | 0                     | 0                         | 5                                        | 0                   | 64                    | 64                 | 26                 | 10.200.0.0/26  | 10.200.0.0  | 10.200.0.63   |
-| Azure Bastion Subnet (AzureBastionSubnet)              | 0            | [27<sup>2</sup>]   | 0                | 0          | 0                        | 100           | 100                 | 0                     | 0                         | 5                                        | 0                   | 32                    | 32                 | 27                 | 10.200.0.96/27 | 10.200.0.96 | 10.200.0.127  |
+| Azure Bastion Subnet (AzureBastionSubnet)              | 0            | [26<sup>2</sup>]   | 0                | 0          | 0                        | 100           | 100                 | 0                     | 0                         | 5                                        | 0                   | 32                    | 32                 | 27                 | 10.200.0.128/26 | 10.200.0.128 | 10.200.0.191  |
 
 ## Additional Considerations
 
@@ -47,7 +47,7 @@ In the future, this VNet might hold more subnets like [ACI Provider instance] su
 [27<sup>1</sup>]: https://docs.microsoft.com/azure/vpn-gateway/vpn-gateway-about-vpn-gateway-settings#gwsub
 [11]: https://docs.microsoft.com/azure/application-gateway/configuration-overview#size-of-the-subnet
 [59]: https://docs.microsoft.com/azure/firewall/firewall-faq#does-the-firewall-subnet-size-need-to-change-as-the-service-scales
-[27<sup>2</sup>]: https://docs.microsoft.com/azure/bastion/bastion-create-host-portal#createhost
+[26<sup>2</sup>]: https://docs.microsoft.com/azure/bastion/bastion-create-host-portal#createhost
 [30]: https://docs.microsoft.com/azure/aks/use-system-pools#system-and-user-node-pools
 [% Max Surge]: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#max-surge
 [% Max Unavailable]: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#max-unavailable
