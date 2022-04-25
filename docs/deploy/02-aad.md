@@ -16,16 +16,26 @@ Following the steps below you will result in an Azure AD configuration that will
 
 > :book: The Contoso Bicycle Azure AD team requires all admin access to AKS clusters be security-group based. This applies to the two AKS clusters that are being created for Application ID a0042 under the BU001 business unit. Kubernetes RBAC will be AAD-backed and access granted based on a user's identity or directory group membership.
 
-1. Create a single "break-glass" cluster administrator user for your AKS clusters, and add to both cluster admin security groups being created that are going to map to the [Kubernetes Cluster Admin](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) role `cluster-admin`.
+1. Either create a single "break-glass" cluster administrator user for your AKS clusters (recommended) or use the currently signed-in user as cluster administrator, and add to both cluster admin security groups being created that are going to map to the [Kubernetes Cluster Admin](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) role `cluster-admin`.
 
    :book: The app team requested a single admin user that needs to have access in both clusters. The Azure AD Admin team create two different groups, one per cluster to home the new admin.
 
+   Create a a _new_ break-class cluster administrator user...:
    ```bash
    # create a single admin for both clusters
    TENANTDOMAIN_K8SRBAC=$(az ad signed-in-user show --query 'userPrincipalName' -o tsv | cut -d '@' -f 2 | sed 's/\"//')
    AADOBJECTNAME_USER_CLUSTERADMIN=bu0001a0042-admin
    AADOBJECTID_USER_CLUSTERADMIN=$(az ad user create --display-name=${AADOBJECTNAME_USER_CLUSTERADMIN} --user-principal-name ${AADOBJECTNAME_USER_CLUSTERADMIN}@${TENANTDOMAIN_K8SRBAC} --force-change-password-next-login --password ChangeMebu0001a0042AdminChangeMe --query objectId -o tsv)
+   ```
 
+   or, _alternatively_, use the currently signed-in user as cluster admin:
+   ```bash
+   TENANTDOMAIN_K8SRBAC=$(az ad signed-in-user show --query 'userPrincipalName' -o tsv | cut -d '@' -f 2 | sed 's/\"//')
+   AADOBJECTID_USER_CLUSTERADMIN=$(az ad signed-in-user show --query 'userPrincipalName' --query objectId -o tsv)
+   ```
+   
+   Create and assign security groups to cluster admin identity:
+   ```bash
    # create the admin groups
    AADOBJECTNAME_GROUP_CLUSTERADMIN_BU0001A004203=cluster-admins-bu0001a0042-03
    AADOBJECTNAME_GROUP_CLUSTERADMIN_BU0001A004204=cluster-admins-bu0001a0042-04
