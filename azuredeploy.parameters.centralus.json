@@ -6,25 +6,25 @@
         "value": "centralus"
       },
       "targetVnetResourceId": {
-        "value": "<cluster-spoke-vnet-resource-id>"
+        "value": "/subscriptions/ce9d064e-10a7-4b7c-8e8e-561fb2e718dd/resourceGroups/rg-enterprise-networking-spokes/providers/Microsoft.Network/virtualNetworks/vnet-hub-spoke-BU0001A0042-04"
       },
       "appInstanceId": {
         "value": "04"
       },
       "clusterAdminAadGroupObjectId": {
-        "value": "<azure-ad-aks-admin-group-object-id>"
+        "value": "4343e178-877c-4cf6-b7f3-35df8475ebbc"
       },
       "k8sControlPlaneAuthorizationTenantId": {
-        "value": "<tenant-id-with-user-admin-permissions>"
+        "value": "679a5224-7633-461d-adce-df49fa1f2a04"
       },
       "clusterInternalLoadBalancerIpAddress": {
         "value": "10.244.4.4"
       },
       "logAnalyticsWorkspaceId": {
-        "value": "<log-analytics-workspace-id>"
+        "value": "/subscriptions/ce9d064e-10a7-4b7c-8e8e-561fb2e718dd/resourceGroups/rg-bu0001a0042-shared/providers/Microsoft.OperationalInsights/workspaces/la-w25nuz74vt2ou"
       },
       "containerRegistryId": {
-        "value": "<container-registry-id>"
+        "value": "/subscriptions/ce9d064e-10a7-4b7c-8e8e-561fb2e718dd/resourceGroups/rg-bu0001a0042-shared/providers/Microsoft.ContainerRegistry/registries/acraksw25nuz74vt2ou"
       }
     }
   }
