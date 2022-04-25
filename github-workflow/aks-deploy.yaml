@@ -22,6 +22,8 @@ on:
       - 'cluster-stamp.json'
       - '.github/workflows/aks-deploy.yaml'
     branches: [ main ]
+  workflow_dispatch:
+  
 env:
   DEPLOY_REGION1: 'true'
   DEPLOY_REGION2: 'true'
